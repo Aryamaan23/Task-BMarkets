@@ -1,16 +1,14 @@
-from django.urls import path, include
-from rest_framework import routers
-from app.views import UserViewSet,CustomAuthToken
-from rest_framework.authtoken import views
+from django.urls import path,include
+from app import views
 from rest_framework.routers import DefaultRouter
 
-
-# Create a router and register our viewsets with it.
 router = DefaultRouter()
+router.register(r'user',views.CustomUserModalViewSets,basename='user' )
 
-router.register(r'users', UserViewSet)
 urlpatterns = [
-    path('', include(router.urls)),
-    path('auth/', CustomAuthToken.as_view())
+    
+    path('',include(router.urls)),
+    path('auth/',include('rest_framework.urls'),name='restframework'),
+    path('api-auth-token/',views.CustomAuthToken.as_view(),name='api-auth-token'),
     
 ]

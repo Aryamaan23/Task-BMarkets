@@ -62,6 +62,10 @@ class Bank(models.Model):
 
 
 class CustomerBankAccount(models.Model):
+    ACCOUNT_CHOICES = [
+        ('savings', 'Savings'),
+        ('current', 'Current')
+    ]
     account_number = models.CharField(max_length=50)
     ifsc_code=models.CharField(max_length=50)
     customer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
@@ -72,7 +76,12 @@ class CustomerBankAccount(models.Model):
     name_as_per_bank_record=models.CharField(max_length=30)
     verification_mode=models.CharField(max_length=30)
     verification_status=models.BooleanField()
-    account_type = models.CharField(max_length=50)
+    account_type = models.CharField(max_length=50,choices=ACCOUNT_CHOICES)
     balance = models.DecimalField(max_digits=10, decimal_places=2)
-    
+
+
+    def save(self, *args, **kwargs):
+        self.pk = f"{self.account_number}-{self.ifsc_code}"
+        super(CustomerBankAccount, self).save(*args, **kwargs)
+
 

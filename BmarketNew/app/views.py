@@ -14,6 +14,11 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate,get_user_model
 
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 class CustomAuthToken(APIView):
     authentication_classes = []
     permission_classes = [permissions.AllowAny]
@@ -41,6 +46,10 @@ class CustomUserModalViewSets(mixins.RetrieveModelMixin,
     serializer_class = CustomUserSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [CustomerAccessPermission]
+
+    def list(self, request):
+        logger.debug(str(self.queryset.query))
+        return super().list(request)
 
     def get_queryset(self):
         queryset =super().get_queryset()

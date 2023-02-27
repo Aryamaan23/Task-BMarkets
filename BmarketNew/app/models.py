@@ -7,6 +7,10 @@ from django.utils.translation import gettext as _
 from .managers import CustomUserManager
 from rest_framework.authtoken.models import Token    
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+
 
 
 class CustomUser(AbstractUser):
@@ -33,6 +37,8 @@ automatically creates token once the user is created
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
+
 
 
 
@@ -70,7 +76,7 @@ class CustomerBankAccount(models.Model):
     ifsc_code=models.CharField(max_length=50)
     customer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     bank=models.ForeignKey(Bank,on_delete=models.CASCADE)
-    cheque_image=models.ImageField()
+    cheque_image=models.ImageField(null=True,blank=True)
     branch_name=models.CharField(max_length=30)
     is_cheque_verified=models.BooleanField()
     name_as_per_bank_record=models.CharField(max_length=30)
@@ -80,8 +86,31 @@ class CustomerBankAccount(models.Model):
     balance = models.DecimalField(max_digits=10, decimal_places=2)
 
 
+    class Meta:
+        unique_together=('account_number','ifsc_code')
+
+
+"""
+@receiver(pre_save, sender=CustomerBankAccount)
+def limit_banks_per_pan(sender, instance, **kwargs):
+    # Get the user's PAN from the bank account
+        pan = instance.user.pan
+
+    # Count the number of active and inactive bank accounts for the user
+        num_active_banks = CustomerBankAccount.objects.filter(user__pan=pan, is_active=True).count()
+        num_inactive_banks = CustomerBankAccount.objects.filter(user__pan=pan, is_active=False).count()
+
+    # Check if adding the current bank account would exceed the maximum limit
+        if num_active_banks >= 1 or num_inactive_banks >= 3:
+            raise ValidationError('Cannot add another bank account for this PAN.')
+
+"""
+    
+"""
     def save(self, *args, **kwargs):
         self.pk = f"{self.account_number}-{self.ifsc_code}"
         super(CustomerBankAccount, self).save(*args, **kwargs)
+
+"""
 
 

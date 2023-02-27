@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .models import CustomUser
-from app.serializers import CustomUserSerializer
+from .models import *
+from app.serializers import CustomUserSerializer,CustomerBankAccountSerializer,BankSerializer
 from rest_framework import viewsets, mixins
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
@@ -14,9 +14,9 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate,get_user_model
 
-import logging
+#import logging
 
-logger = logging.getLogger(__name__)
+#logger = logging.getLogger(__name__)
 
 
 class CustomAuthToken(APIView):
@@ -47,9 +47,9 @@ class CustomUserModalViewSets(mixins.RetrieveModelMixin,
     authentication_classes = [TokenAuthentication]
     permission_classes = [CustomerAccessPermission]
 
-    def list(self, request):
-        logger.debug(str(self.queryset.query))
-        return super().list(request)
+    # def list(self, request):
+    #     logger.debug(str(self.queryset.query))
+    #     return super().list(request)
 
     def get_queryset(self):
         queryset =super().get_queryset()
@@ -67,3 +67,104 @@ class CustomUserModalViewSets(mixins.RetrieveModelMixin,
         return Response(serilaizer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     
+
+class CustomerBankAccountModellViewSets(mixins.RetrieveModelMixin,
+                    mixins.UpdateModelMixin,
+                    mixins.CreateModelMixin,
+                    mixins.ListModelMixin,
+                    viewsets.GenericViewSet):
+    queryset = CustomerBankAccount.objects.all()
+    serializer_class =CustomerBankAccountSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+    def perform_create(self, serializer):
+        # Get the token from the request header
+        token_key = self.request.headers.get('Authorization').split(' ')[1]
+        # Get the token object from the database
+        print('token_key:---------------------------',token_key)
+        token = Token.objects.get(key=token_key)
+        # Get the user associated with the token
+        user = token.user
+ 
+        # Get the customer associated with the user's email
+        try:
+            customer = CustomUser.objects.get(email=user.email)
+            print('email--------------------------',customer)
+        except CustomUser.DoesNotExist:
+            return Response({"error":"Customer not found"})
+
+        serializer.validated_data['customer']=customer
+        serializer.save()
+
+
+"""
+    def get_queryset(self):
+        queryset =super().get_queryset()
+        if not self.request.user.is_superuser:
+            queryset = queryset.filter(id=self.request.user.id)
+
+        return queryset
+
+    
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [CustomerAccessPermission]
+
+    def list(self, request):
+        logger.debug(str(self.queryset.query))
+        return super().list(request)
+
+    def get_queryset(self):
+        queryset =super().get_queryset()
+        if not self.request.user.is_superuser:
+            queryset = queryset.filter(id=self.request.user.id)
+
+        return queryset
+
+    def create(self,request, *args, **kwargs):
+        serilaizer = CustomerBankAccountSerializer(data=request.data)
+        if serilaizer.is_valid():
+            customer = serilaizer.save()
+            token = Token.objects.get(user=customer)
+            return Response({'customer': serilaizer.data, 'token': token.key}, status=status.HTTP_201_CREATED)
+        return Response(serilaizer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+"""
+
+
+class BankModellViewSets(mixins.RetrieveModelMixin,
+                    mixins.UpdateModelMixin,
+                    mixins.CreateModelMixin,
+                    mixins.ListModelMixin,
+                    viewsets.GenericViewSet):
+    queryset = Bank.objects.all()
+    serializer_class =BankSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    """"
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [CustomerAccessPermission]
+
+    def list(self, request):
+        logger.debug(str(self.queryset.query))
+        return super().list(request)
+
+    def get_queryset(self):
+        queryset =super().get_queryset()
+        if not self.request.user.is_superuser:
+            queryset = queryset.filter(id=self.request.user.id)
+
+        return queryset
+
+    def create(self,request, *args, **kwargs):
+        serilaizer = CustomerBankAccountSerializer(data=request.data)
+        if serilaizer.is_valid():
+            customer = serilaizer.save()
+            token = Token.objects.get(user=customer)
+            return Response({'customer': serilaizer.data, 'token': token.key}, status=status.HTTP_201_CREATED)
+        return Response(serilaizer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+"""
+

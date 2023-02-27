@@ -4,6 +4,8 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r'user',views.CustomUserModalViewSets,basename='user' )
+router.register(r'bankaccounts',views.CustomerBankAccountModellViewSets,basename='bankaccounts' )
+router.register(r'banks',views.BankModellViewSets,basename='banks')
 
 urlpatterns = [
     

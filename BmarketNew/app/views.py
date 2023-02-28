@@ -104,8 +104,20 @@ class CustomerBankAccountModellViewSets(mixins.RetrieveModelMixin,
             bank_account.save()
         serializer.save(is_active=True)
     """
-   
 
+   
+   
+    def get_queryset(self):
+        # Get the user object
+        token_key = self.request.headers.get('Authorization').split(' ')[1]
+        token = Token.objects.get(key=token_key)
+        user=token.user
+        customer=CustomUser.objects.get(email=user.email)
+        self.request.data['customer']=customer.id
+        active_banks = CustomerBankAccount.objects.filter(customer=self.request.data['customer'],is_active=True)
+        return active_banks
+
+   
 
     def create(self, request, *args, **kwargs):
         token_key = self.request.headers.get('Authorization').split(' ')[1]

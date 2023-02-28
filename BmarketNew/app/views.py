@@ -66,6 +66,7 @@ class CustomUserModalViewSets(mixins.RetrieveModelMixin,
             return Response({'customer': serilaizer.data, 'token': token.key}, status=status.HTTP_201_CREATED)
         return Response(serilaizer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
     
 
 class CustomerBankAccountModellViewSets(mixins.RetrieveModelMixin,
@@ -79,6 +80,51 @@ class CustomerBankAccountModellViewSets(mixins.RetrieveModelMixin,
     permission_classes = [IsAuthenticated]
 
 
+    # def perform_create(self, serializer):
+    #     token_key = self.request.headers.get('Authorization').split(' ')[1]
+    #     token = Token.objects.get(key=token_key)
+    #     user = token.user
+    #     #bank_account=CustomerBankAccount.account_number
+    #     serializer.validated_data['id'] = self.request.data['customer']
+    #     user_bank_accounts = CustomerBankAccount.objects.get(account_number=CustomerBankAccount.account_number)
+    #     self.request.data['account_number']=user_bank_accounts.account_number
+    #     for bank_account in user_bank_accounts:
+    #         bank_account.is_active = False
+    #         bank_account.save()
+    #     serializer.save(is_active=True)
+    #     return super().perform_create(serializer)
+
+    
+    """
+    def perform_create(self, serializer):
+        serializer.validated_data['account_number'] = self.request.account_number
+        user_bank_accounts = CustomerBankAccount.objects.filter(account_number=self.request.user)
+        for bank_account in user_bank_accounts:
+            bank_account.is_active = False
+            bank_account.save()
+        serializer.save(is_active=True)
+    """
+   
+
+
+    def create(self, request, *args, **kwargs):
+        token_key = self.request.headers.get('Authorization').split(' ')[1]
+        token = Token.objects.get(key=token_key)
+        user=token.user
+        customer=CustomUser.objects.get(email=user.email)
+        request.data['customer']=customer.id
+        user_bank_accounts = CustomerBankAccount.objects.filter(customer=self.request.data['customer'])
+        for bank_account in user_bank_accounts:
+            bank_account.is_active = False
+            bank_account.save()
+        #self.serializer.save(is_active=True)
+        print(request.data['customer'])
+        return super().create(request, *args, **kwargs)
+
+
+
+
+"""
     def perform_create(self, serializer):
         # Get the token from the request header
         token_key = self.request.headers.get('Authorization').split(' ')[1]
@@ -94,9 +140,31 @@ class CustomerBankAccountModellViewSets(mixins.RetrieveModelMixin,
             print('email--------------------------',customer)
         except CustomUser.DoesNotExist:
             return Response({"error":"Customer not found"})
-
-        serializer.validated_data['customer']=customer
+ 
+        account_count = CustomerBankAccount.objects.filter(customer=customer).count()
+        if account_count >= 4:
+            return Response({"error":"You cannot create more than 4 accounts for this user"})
+ 
+        # Set the customer in the serializer and save the object
+        serializer.validated_data['customer'] = customer
         serializer.save()
+
+"""
+
+  
+"""
+    def create_bank_account(request):
+    if request.method == 'POST':
+        # Retrieve the logged-in user's email
+        user_email = request.user.email
+        # Create a new bank account object and associate it with the user
+        new_account = BankAccount(user_email=user_email, account_number=request.POST['account_number'])
+        new_account.save()
+        return render(request, 'bank_account_created.html', {'account_number': new_account.account_number})
+    else:
+        return render(request, 'create_bank_account.html')
+
+"""
 
 
 """

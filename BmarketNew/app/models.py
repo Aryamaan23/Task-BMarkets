@@ -84,6 +84,7 @@ class CustomerBankAccount(models.Model):
     verification_status=models.BooleanField()
     account_type = models.CharField(max_length=50,choices=ACCOUNT_CHOICES)
     balance = models.DecimalField(max_digits=10, decimal_places=2)
+    is_active=models.BooleanField(default=True)
 
 
     class Meta:

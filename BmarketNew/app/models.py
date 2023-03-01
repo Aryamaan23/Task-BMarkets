@@ -28,7 +28,7 @@ class CustomUser(AbstractUser):
 
     objects = CustomUserManager()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.email
 
 
@@ -53,7 +53,7 @@ class Bank(models.Model):
     bank_number=models.CharField(max_length=30)
     bank_logo=models.ImageField()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.bank_name
 
 

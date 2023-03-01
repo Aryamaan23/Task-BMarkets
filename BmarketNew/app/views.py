@@ -50,14 +50,14 @@ class CustomUserModalViewSets(mixins.RetrieveModelMixin,
     CustomerViewset for handling all the CRUD operations related to the customer
     """
 
-    def list(self, request):
+    def list(self, request) -> Response:
         """
         For logging the SQL queries
         """
         logger.debug(str(self.queryset.query))
         return super().list(request)
 
-    def get_queryset(self):
+    def get_queryset(self)-> CustomUser:
         """
         Fetch data of all the users if the user is a superuser and fetch only the data of that user if he/she is a normal user
         """
@@ -68,7 +68,7 @@ class CustomUserModalViewSets(mixins.RetrieveModelMixin,
         return queryset
 
 
-    def create(self,request, *args, **kwargs):
+    def create(self,request, *args, **kwargs) -> Response:
         """
         For creating the customer
         """
@@ -94,14 +94,14 @@ class CustomerBankAccountModellViewSets(viewsets.ModelViewSet):
     """
 
 
-    def list(self, request):
+    def list(self, request) -> Response:
         """
         For logging the sql queries in the file
         """
         logger.debug(str(self.queryset.query))
         return super().list(request)
    
-    def get_queryset(self):
+    def get_queryset(self) -> CustomerBankAccount:
         """
         Filter based on the active_status of the bank accounts and fetch it
         """
@@ -111,7 +111,7 @@ class CustomerBankAccountModellViewSets(viewsets.ModelViewSet):
         return active_banks
 
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs) -> Response:
         """
         Create Account only if you are authorized with the token authentication
         """
@@ -143,7 +143,7 @@ class BankModellViewSets(mixins.RetrieveModelMixin,
     permission_classes = [IsAuthenticatedOrReadOnly & IsSuperUser]
 
    
-    def list(self, request):
+    def list(self, request) -> Response:
         """
         For logging the SQL queries
         """

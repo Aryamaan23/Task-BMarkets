@@ -530,3 +530,72 @@
             WHERE type in ('table', 'view') AND NOT name='sqlite_sequence'
             ORDER BY name; args=None; alias=default
 (0.000) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=(); alias=default
+(0.000) 
+            SELECT name, type FROM sqlite_master
+            WHERE type in ('table', 'view') AND NOT name='sqlite_sequence'
+            ORDER BY name; args=None; alias=default
+(0.000) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=(); alias=default
+(0.000) 
+            SELECT name, type FROM sqlite_master
+            WHERE type in ('table', 'view') AND NOT name='sqlite_sequence'
+            ORDER BY name; args=None; alias=default
+(0.000) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=(); alias=default
+(0.000) 
+            SELECT name, type FROM sqlite_master
+            WHERE type in ('table', 'view') AND NOT name='sqlite_sequence'
+            ORDER BY name; args=None; alias=default
+(0.000) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=(); alias=default
+(0.000) 
+            SELECT name, type FROM sqlite_master
+            WHERE type in ('table', 'view') AND NOT name='sqlite_sequence'
+            ORDER BY name; args=None; alias=default
+(0.000) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=(); alias=default
+(0.000) 
+            SELECT name, type FROM sqlite_master
+            WHERE type in ('table', 'view') AND NOT name='sqlite_sequence'
+            ORDER BY name; args=None; alias=default
+(0.000) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=(); alias=default
+(0.001) 
+            SELECT name, type FROM sqlite_master
+            WHERE type in ('table', 'view') AND NOT name='sqlite_sequence'
+            ORDER BY name; args=None; alias=default
+(0.000) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=(); alias=default
+(0.000) 
+            SELECT name, type FROM sqlite_master
+            WHERE type in ('table', 'view') AND NOT name='sqlite_sequence'
+            ORDER BY name; args=None; alias=default
+(0.000) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=(); alias=default
+(0.000) 
+            SELECT name, type FROM sqlite_master
+            WHERE type in ('table', 'view') AND NOT name='sqlite_sequence'
+            ORDER BY name; args=None; alias=default
+(0.000) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=(); alias=default
+(0.000) 
+            SELECT name, type FROM sqlite_master
+            WHERE type in ('table', 'view') AND NOT name='sqlite_sequence'
+            ORDER BY name; args=None; alias=default
+(0.000) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=(); alias=default
+(0.000) 
+            SELECT name, type FROM sqlite_master
+            WHERE type in ('table', 'view') AND NOT name='sqlite_sequence'
+            ORDER BY name; args=None; alias=default
+(0.000) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=(); alias=default
+(0.000) 
+            SELECT name, type FROM sqlite_master
+            WHERE type in ('table', 'view') AND NOT name='sqlite_sequence'
+            ORDER BY name; args=None; alias=default
+(0.000) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=(); alias=default
+(0.002) SELECT "django_session"."session_key", "django_session"."session_data", "django_session"."expire_date" FROM "django_session" WHERE ("django_session"."expire_date" > '2023-03-01 11:53:00.417738' AND "django_session"."session_key" = 'ecr5frgzdsh5l4bkv4z4uebbs0wtthws') LIMIT 21; args=('2023-03-01 11:53:00.417738', 'ecr5frgzdsh5l4bkv4z4uebbs0wtthws'); alias=default
+(0.004) SELECT "app_customuser"."id", "app_customuser"."password", "app_customuser"."last_login", "app_customuser"."is_superuser", "app_customuser"."username", "app_customuser"."is_staff", "app_customuser"."is_active", "app_customuser"."date_joined", "app_customuser"."email", "app_customuser"."first_name", "app_customuser"."middle_name", "app_customuser"."last_name", "app_customuser"."pan_number", "app_customuser"."phone_number" FROM "app_customuser" WHERE "app_customuser"."id" = 1 LIMIT 21; args=(1,); alias=default
+(0.001) SELECT "django_admin_log"."id", "django_admin_log"."action_time", "django_admin_log"."user_id", "django_admin_log"."content_type_id", "django_admin_log"."object_id", "django_admin_log"."object_repr", "django_admin_log"."action_flag", "django_admin_log"."change_message", "app_customuser"."id", "app_customuser"."password", "app_customuser"."last_login", "app_customuser"."is_superuser", "app_customuser"."username", "app_customuser"."is_staff", "app_customuser"."is_active", "app_customuser"."date_joined", "app_customuser"."email", "app_customuser"."first_name", "app_customuser"."middle_name", "app_customuser"."last_name", "app_customuser"."pan_number", "app_customuser"."phone_number", "django_content_type"."id", "django_content_type"."app_label", "django_content_type"."model" FROM "django_admin_log" INNER JOIN "app_customuser" ON ("django_admin_log"."user_id" = "app_customuser"."id") LEFT OUTER JOIN "django_content_type" ON ("django_admin_log"."content_type_id" = "django_content_type"."id") WHERE "django_admin_log"."user_id" = 1 ORDER BY "django_admin_log"."action_time" DESC LIMIT 10; args=(1,); alias=default
+(0.001) SELECT "django_session"."session_key", "django_session"."session_data", "django_session"."expire_date" FROM "django_session" WHERE ("django_session"."expire_date" > '2023-03-01 11:53:02.482274' AND "django_session"."session_key" = 'ecr5frgzdsh5l4bkv4z4uebbs0wtthws') LIMIT 21; args=('2023-03-01 11:53:02.482274', 'ecr5frgzdsh5l4bkv4z4uebbs0wtthws'); alias=default
+(0.000) SELECT "app_customuser"."id", "app_customuser"."password", "app_customuser"."last_login", "app_customuser"."is_superuser", "app_customuser"."username", "app_customuser"."is_staff", "app_customuser"."is_active", "app_customuser"."date_joined", "app_customuser"."email", "app_customuser"."first_name", "app_customuser"."middle_name", "app_customuser"."last_name", "app_customuser"."pan_number", "app_customuser"."phone_number" FROM "app_customuser" WHERE "app_customuser"."id" = 1 LIMIT 21; args=(1,); alias=default
+(0.000) SELECT COUNT(*) AS "__count" FROM "app_customerbankaccount"; args=(); alias=default
+(0.000) SELECT COUNT(*) AS "__count" FROM "app_customerbankaccount"; args=(); alias=default
+(0.001) SELECT "app_customerbankaccount"."id", "app_customerbankaccount"."account_number", "app_customerbankaccount"."ifsc_code", "app_customerbankaccount"."customer_id", "app_customerbankaccount"."bank_id", "app_customerbankaccount"."cheque_image", "app_customerbankaccount"."branch_name", "app_customerbankaccount"."is_cheque_verified", "app_customerbankaccount"."name_as_per_bank_record", "app_customerbankaccount"."verification_mode", "app_customerbankaccount"."verification_status", "app_customerbankaccount"."account_type", "app_customerbankaccount"."balance", "app_customerbankaccount"."is_active", "app_customuser"."id", "app_customuser"."password", "app_customuser"."last_login", "app_customuser"."is_superuser", "app_customuser"."username", "app_customuser"."is_staff", "app_customuser"."is_active", "app_customuser"."date_joined", "app_customuser"."email", "app_customuser"."first_name", "app_customuser"."middle_name", "app_customuser"."last_name", "app_customuser"."pan_number", "app_customuser"."phone_number", "app_bank"."id", "app_bank"."bank_id", "app_bank"."bank_name", "app_bank"."bank_website", "app_bank"."bank_number", "app_bank"."bank_logo" FROM "app_customerbankaccount" INNER JOIN "app_customuser" ON ("app_customerbankaccount"."customer_id" = "app_customuser"."id") INNER JOIN "app_bank" ON ("app_customerbankaccount"."bank_id" = "app_bank"."id") ORDER BY "app_customerbankaccount"."id" DESC; args=(); alias=default
+(0.001) SELECT "django_session"."session_key", "django_session"."session_data", "django_session"."expire_date" FROM "django_session" WHERE ("django_session"."expire_date" > '2023-03-01 11:53:02.684765' AND "django_session"."session_key" = 'ecr5frgzdsh5l4bkv4z4uebbs0wtthws') LIMIT 21; args=('2023-03-01 11:53:02.684765', 'ecr5frgzdsh5l4bkv4z4uebbs0wtthws'); alias=default
+(0.000) SELECT "app_customuser"."id", "app_customuser"."password", "app_customuser"."last_login", "app_customuser"."is_superuser", "app_customuser"."username", "app_customuser"."is_staff", "app_customuser"."is_active", "app_customuser"."date_joined", "app_customuser"."email", "app_customuser"."first_name", "app_customuser"."middle_name", "app_customuser"."last_name", "app_customuser"."pan_number", "app_customuser"."phone_number" FROM "app_customuser" WHERE "app_customuser"."id" = 1 LIMIT 21; args=(1,); alias=default
+(0.001) SELECT "authtoken_token"."key", "authtoken_token"."user_id", "authtoken_token"."created", "app_customuser"."id", "app_customuser"."password", "app_customuser"."last_login", "app_customuser"."is_superuser", "app_customuser"."username", "app_customuser"."is_staff", "app_customuser"."is_active", "app_customuser"."date_joined", "app_customuser"."email", "app_customuser"."first_name", "app_customuser"."middle_name", "app_customuser"."last_name", "app_customuser"."pan_number", "app_customuser"."phone_number" FROM "authtoken_token" INNER JOIN "app_customuser" ON ("authtoken_token"."user_id" = "app_customuser"."id") WHERE "authtoken_token"."key" = 'a3171c527c3f5ffce63ef9fdd82376275bc656bc' LIMIT 21; args=('a3171c527c3f5ffce63ef9fdd82376275bc656bc',); alias=default
+(0.000) SELECT "app_customuser"."id", "app_customuser"."password", "app_customuser"."last_login", "app_customuser"."is_superuser", "app_customuser"."username", "app_customuser"."is_staff", "app_customuser"."is_active", "app_customuser"."date_joined", "app_customuser"."email", "app_customuser"."first_name", "app_customuser"."middle_name", "app_customuser"."last_name", "app_customuser"."pan_number", "app_customuser"."phone_number" FROM "app_customuser" WHERE "app_customuser"."email" = 'a23@gmail.com' LIMIT 21; args=('a23@gmail.com',); alias=default
+(0.000) SELECT "app_customerbankaccount"."id", "app_customerbankaccount"."account_number", "app_customerbankaccount"."ifsc_code", "app_customerbankaccount"."customer_id", "app_customerbankaccount"."bank_id", "app_customerbankaccount"."cheque_image", "app_customerbankaccount"."branch_name", "app_customerbankaccount"."is_cheque_verified", "app_customerbankaccount"."name_as_per_bank_record", "app_customerbankaccount"."verification_mode", "app_customerbankaccount"."verification_status", "app_customerbankaccount"."account_type", "app_customerbankaccount"."balance", "app_customerbankaccount"."is_active" FROM "app_customerbankaccount" WHERE ("app_customerbankaccount"."customer_id" = 2 AND "app_customerbankaccount"."is_active" AND "app_customerbankaccount"."id" = 24) LIMIT 21; args=(2, 24); alias=default
+(0.000) SELECT "app_bank"."id", "app_bank"."bank_id", "app_bank"."bank_name", "app_bank"."bank_website", "app_bank"."bank_number", "app_bank"."bank_logo" FROM "app_bank" WHERE "app_bank"."id" = 1 LIMIT 21; args=(1,); alias=default

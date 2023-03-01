@@ -42,49 +42,35 @@ class CustomerBankAccountSerializer(serializers.ModelSerializer):
         data['bank_logo'] = self.context['request'].build_absolute_uri(data['bank_logo'].url)
         return data
     
-    
-    # def to_representation(self, instance):
-    #     #representation = super().to_representation(instance)
-    #     #representation['bank_logo'] = instance.bank.bank_logo
-    #     bank_logo = instance.bank.bank_logo.encode('iso-8859-1')
-    #     name_unicode = force_text(bank_logo, errors='replace')
-    #     return {'name':name_unicode}
-   
 
-    
-    
-    def validate(self, attrs):
-        user = self.context['request'].user
-        instance = CustomerBankAccount(**attrs)
-        #print(instance)
-
-        if user.is_superuser:
-            # Count the number of accounts created by all users
-             num_accounts = CustomerBankAccount.objects.filter(customer=instance.customer).count()
-        else:
-            # Count the number of accounts created by this user
-             num_accounts = CustomerBankAccount.objects.filter(customer=instance.customer).count()
-       
-        if num_accounts >= 4:
-            raise serializers.ValidationError("You cannot create more than 4 accounts in this bank.")
-        return super().validate(attrs)
-
-
-    def update(self, instance, validated_data):
-         #vs = self.context['request'].verification_status
-        if instance.verification_status==True:
-             raise serializers.ValidationError("You can't update the account as verification status is true")
-        return super().update(instance, validated_data)
-
-   
-    '''
     def validate_customer(self, customer):
+        
         account_number=CustomerBankAccount.objects.filter(customer=customer).count()
-
         # Check if the user already has 4 accounts in the bank
         if account_number >= 4:
             raise serializers.ValidationError("You cannot create more than 4 accounts in this bank.")
-    '''
+
+        return customer
+    
+
+
+
+
+    def update(self, instance, validated_data):
+        if instance.verification_status==True:
+             raise serializers.ValidationError("You can't update the account as verification status is true")
+        else:
+            instance.account_number = validated_data.get('account_number', instance.account_number)
+            instance.ifsc_code = validated_data.get('ifsc_code', instance.ifsc_code)
+            instance.branch_name = validated_data.get('branch_name', instance.branch_name)
+            instance.name_as_per_bank_record = validated_data.get('name_as_per_bank_record', instance.name_as_per_bank_record)
+            instance.verification_mode = validated_data.get('verification_mode', instance.verification_mode)
+            instance.account_type = validated_data.get('account_type', instance.account_type)
+            return instance
+        
+        return super().update(instance, validated_data)
+
+   
 
 
 
@@ -134,3 +120,22 @@ class CustomerBankAccountSerializer(serializers.ModelSerializer):
 
 #         attrs['user'] = user
 #         return attrs
+
+
+"""
+    def validate(self, attrs):
+        user = self.context['request'].user
+        instance = CustomerBankAccount(**attrs)
+        #print(instance)
+
+        if user.is_superuser:
+            # Count the number of accounts created by all users
+             num_accounts = CustomerBankAccount.objects.filter(customer=instance.customer).count()
+        else:
+            # Count the number of accounts created by this user
+             num_accounts = CustomerBankAccount.objects.filter(customer=instance.customer).count()
+       
+        if num_accounts >= 4:
+            raise serializers.ValidationError("You cannot create more than 4 accounts in this bank.")
+        return super().validate(attrs)
+"""

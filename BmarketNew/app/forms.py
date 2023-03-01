@@ -1,23 +1,17 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-
 from .models import *
-
 from django import forms
 
 class CustomUserCreationForm(UserCreationForm):
-
     class Meta:
         model = CustomUser
         #fields = ('email',)
         fields='__all__'
 
 class CustomUserChangeForm(UserChangeForm):
-
     class Meta:
         model = CustomUser
         fields = ('email',)
-
-
 
 class CustomerBankForm(forms.ModelForm):
 

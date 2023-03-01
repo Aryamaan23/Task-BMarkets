@@ -16,8 +16,7 @@ from django.contrib.auth import authenticate,get_user_model
 from rest_framework.decorators import action
 import logging
 
-#logger = logging.getLogger(__name__)
-
+logger = logging.getLogger(__name__)
 
 class CustomAuthToken(APIView):
     authentication_classes = []
@@ -47,18 +46,32 @@ class CustomUserModalViewSets(mixins.RetrieveModelMixin,
     authentication_classes = [TokenAuthentication]
     permission_classes = [CustomerAccessPermission]
 
-    # def list(self, request):
-    #     logger.debug(str(self.queryset.query))
-    #     return super().list(request)
+    """
+    CustomerViewset for handling all the CRUD operations related to the customer
+    """
+
+    def list(self, request):
+        """
+        For logging the SQL queries
+        """
+        logger.debug(str(self.queryset.query))
+        return super().list(request)
 
     def get_queryset(self):
+        """
+        Fetch data of all the users if the user is a superuser and fetch only the data of that user if he/she is a normal user
+        """
         queryset =super().get_queryset()
         if not self.request.user.is_superuser:
             queryset = queryset.filter(id=self.request.user.id)
 
         return queryset
 
+
     def create(self,request, *args, **kwargs):
+        """
+        For creating the customer
+        """
         serilaizer = CustomUserSerializer(data=request.data)
         if serilaizer.is_valid():
             customer = serilaizer.save()
@@ -74,10 +87,24 @@ class CustomerBankAccountModellViewSets(viewsets.ModelViewSet):
     serializer_class =CustomerBankAccountSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    
 
+    """
+    CustomerBankAccount Model Viewset is consumed to perform CRUD on bank account details.
+    Only authorized user with the token can update his/her information
+    """
+
+
+    def list(self, request):
+        """
+        For logging the sql queries in the file
+        """
+        logger.debug(str(self.queryset.query))
+        return super().list(request)
    
     def get_queryset(self):
+        """
+        Filter based on the active_status of the bank accounts and fetch it
+        """
         user = self.request.user
         customer=CustomUser.objects.get(email=user.email)
         active_banks = CustomerBankAccount.objects.filter(customer=customer.id,is_active=True)
@@ -85,6 +112,9 @@ class CustomerBankAccountModellViewSets(viewsets.ModelViewSet):
 
 
     def create(self, request, *args, **kwargs):
+        """
+        Create Account only if you are authorized with the token authentication
+        """
         user = self.request.user
         customer=CustomUser.objects.get(email=user.email)
         request.data['customer']=customer.id
@@ -101,20 +131,25 @@ class BankModellViewSets(mixins.RetrieveModelMixin,
                     mixins.CreateModelMixin,
                     mixins.ListModelMixin,
                     viewsets.GenericViewSet):
+
+    """
+    BankViewset for doing the CRUD operations on the Master Bank Model.
+    Custom Permission has been given only superuser has the access to perform CRUD on the Bank model.
+    Normal User can't do any CRUD operations on the Bank Model.
+    """
     queryset = Bank.objects.all()
     serializer_class =BankSerializer
     #authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly & IsSuperUser]
-    
-    """
-    def list(self, request):
-        logger = logging.getLogger('django.db.backends')
-        with logger.debug('SQL Query'):
-            queryset = Bank.objects.all()
-            serializer = BankSerializer(queryset, many=True)
-            return Response(serializer.data)
-    """
 
+
+    def list(self, request):
+        """
+        For logging the SQL queries
+        """
+        logger.debug(str(self.queryset.query))
+        return super().list(request)
+    
 
 
 

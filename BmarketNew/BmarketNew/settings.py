@@ -86,9 +86,52 @@ LOGGING = {
         'django.db.backends': {
             'handlers': ['file'],
             'level': 'DEBUG',
+            'formatter': 'verbose',
         },
     },
 }
+
+
+"""
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'django.log',
+            'formatter': 'verbose',
+        },
+        'sql_queries_file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'sql_queries.log',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'myapp': {
+            'handlers': ['sql_queries_file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s %(levelname)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(asctime)s %(levelname)s %(message)s'
+        },
+    },
+}
+"""
 
 TEMPLATES = [
     {

@@ -12,6 +12,9 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
 
+"""
+CustomUser Model - Extended the django user model for storing the details of the customer
+"""
 
 class CustomUser(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
@@ -30,9 +33,8 @@ class CustomUser(AbstractUser):
 
 
 '''
-automatically creates token once the user is created
+This signal automatically creates token once the user is created...
 '''
-
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
@@ -40,20 +42,8 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 
 
 
-
-
 """
-account_number
-ifsc_code
-customer
-bank
-cheque_image
-branch_name
-is_cheque_verified
-name_as_per_bank_record
-verification_mode
-verification_status
-account_type
+Masterbank-Model for storing the details of all the banks
 """
 
 class Bank(models.Model):
@@ -66,6 +56,10 @@ class Bank(models.Model):
     def __str__(self):
         return self.bank_name
 
+
+"""
+Customer-BankAccount Model for storing the details of all the customers
+"""
 
 class CustomerBankAccount(models.Model):
     ACCOUNT_CHOICES = [
@@ -90,28 +84,5 @@ class CustomerBankAccount(models.Model):
     class Meta:
         unique_together=('account_number','ifsc_code')
 
-
-"""
-@receiver(pre_save, sender=CustomerBankAccount)
-def limit_banks_per_pan(sender, instance, **kwargs):
-    # Get the user's PAN from the bank account
-        pan = instance.user.pan
-
-    # Count the number of active and inactive bank accounts for the user
-        num_active_banks = CustomerBankAccount.objects.filter(user__pan=pan, is_active=True).count()
-        num_inactive_banks = CustomerBankAccount.objects.filter(user__pan=pan, is_active=False).count()
-
-    # Check if adding the current bank account would exceed the maximum limit
-        if num_active_banks >= 1 or num_inactive_banks >= 3:
-            raise ValidationError('Cannot add another bank account for this PAN.')
-
-"""
-    
-"""
-    def save(self, *args, **kwargs):
-        self.pk = f"{self.account_number}-{self.ifsc_code}"
-        super(CustomerBankAccount, self).save(*args, **kwargs)
-
-"""
 
 

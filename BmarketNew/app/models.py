@@ -81,7 +81,7 @@ class CustomerBankAccount(models.Model):
     is_cheque_verified=models.BooleanField()
     name_as_per_bank_record=models.CharField(max_length=30)
     verification_mode=models.CharField(max_length=30)
-    verification_status=models.BooleanField()
+    verification_status=models.BooleanField(default=False)
     account_type = models.CharField(max_length=50,choices=ACCOUNT_CHOICES)
     balance = models.DecimalField(max_digits=10, decimal_places=2)
     is_active=models.BooleanField(default=True)

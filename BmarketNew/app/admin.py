@@ -70,8 +70,10 @@ class BankAdmin(admin.ModelAdmin):
 class CustomerBankaccountAdmin(admin.ModelAdmin):
     #form=CustomerBankForm
     list_display=('id','account_number','ifsc_code','is_active','customer','bank','cheque_image','branch_name','is_cheque_verified','name_as_per_bank_record','verification_mode','verification_status','account_type')
+    list_editable = ('verification_status',)
     
     
+    """
     def save_model(self, request, obj, form, change):
         existing_count = CustomerBankAccount.objects.filter(customer=obj.customer).count()
         condition=True
@@ -81,6 +83,7 @@ class CustomerBankaccountAdmin(admin.ModelAdmin):
                 condition=False
         if condition==True:
             super().save_model(request, obj, form, change)
+    """
 
     """
     def clean(self):

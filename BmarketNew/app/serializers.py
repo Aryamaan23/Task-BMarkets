@@ -32,12 +32,13 @@ class CustomerBankAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model=CustomerBankAccount
         #fields='__all__'
-        exclude=['is_active']
+        exclude=['is_active','verification_status']
 
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data['bank_logo']=instance.bank.bank_logo
+        data['bank_name']=instance.bank.bank_name
         data['bank_logo'] = self.context['request'].build_absolute_uri(data['bank_logo'].url)
         return data
     
@@ -71,7 +72,7 @@ class CustomerBankAccountSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
          #vs = self.context['request'].verification_status
-        if instance.verification_status==False:
+        if instance.verification_status==True:
              raise serializers.ValidationError("You can't update the account as verification status is true")
         return super().update(instance, validated_data)
 

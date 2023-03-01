@@ -69,7 +69,7 @@ class BankAdmin(admin.ModelAdmin):
 
 class CustomerBankaccountAdmin(admin.ModelAdmin):
     #form=CustomerBankForm
-    list_display=('ifsc_code','customer','bank','cheque_image','branch_name','is_cheque_verified','name_as_per_bank_record','verification_mode','verification_status','account_type','is_active')
+    list_display=('id','account_number','ifsc_code','is_active','customer','bank','cheque_image','branch_name','is_cheque_verified','name_as_per_bank_record','verification_mode','verification_status','account_type')
     
     
     def save_model(self, request, obj, form, change):

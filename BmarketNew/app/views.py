@@ -13,6 +13,7 @@ from .permissions import CustomerAccessPermission
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate,get_user_model
+from rest_framework.decorators import action
 
 #import logging
 
@@ -69,15 +70,12 @@ class CustomUserModalViewSets(mixins.RetrieveModelMixin,
 
     
 
-class CustomerBankAccountModellViewSets(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.CreateModelMixin,
-                    mixins.ListModelMixin,
-                    viewsets.GenericViewSet):
+class CustomerBankAccountModellViewSets(viewsets.ModelViewSet):
     queryset = CustomerBankAccount.objects.all()
     serializer_class =CustomerBankAccountSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+    # http_method_names = ['get', 'post', 'put', 'delete']
 
 
     # def perform_create(self, serializer):
@@ -94,18 +92,6 @@ class CustomerBankAccountModellViewSets(mixins.RetrieveModelMixin,
     #     serializer.save(is_active=True)
     #     return super().perform_create(serializer)
 
-    
-    """
-    def perform_create(self, serializer):
-        serializer.validated_data['account_number'] = self.request.account_number
-        user_bank_accounts = CustomerBankAccount.objects.filter(account_number=self.request.user)
-        for bank_account in user_bank_accounts:
-            bank_account.is_active = False
-            bank_account.save()
-        serializer.save(is_active=True)
-    """
-
-   
    
     def get_queryset(self):
         # Get the user object
@@ -113,30 +99,55 @@ class CustomerBankAccountModellViewSets(mixins.RetrieveModelMixin,
         token = Token.objects.get(key=token_key)
         user=token.user
         customer=CustomUser.objects.get(email=user.email)
-        self.request.data['customer']=customer.id
-        active_banks = CustomerBankAccount.objects.filter(customer=self.request.data['customer'],is_active=True)
+        #self.request.data['customer']=customer.id
+        active_banks = CustomerBankAccount.objects.filter(customer=customer.id,is_active=True)
         return active_banks
 
-   
 
     def create(self, request, *args, **kwargs):
-        token_key = self.request.headers.get('Authorization').split(' ')[1]
-        token = Token.objects.get(key=token_key)
-        user=token.user
+        # token_key = self.request.headers.get('Authorization').split(' ')[1]
+        # token = Token.objects.get(key=token_key)
+        # user=token.user
+        user = self.request.user
         customer=CustomUser.objects.get(email=user.email)
         request.data['customer']=customer.id
-        user_bank_accounts = CustomerBankAccount.objects.filter(customer=self.request.data['customer'])
+        user_bank_accounts = CustomerBankAccount.objects.filter(customer=customer.id)
         for bank_account in user_bank_accounts:
             bank_account.is_active = False
             bank_account.save()
-        #self.serializer.save(is_active=True)
-        print(request.data['customer'])
+        # self.serializer.save(is_active=True)
+        #print(request.data['customer'])
         return super().create(request, *args, **kwargs)
+
+
+
+class BankModellViewSets(mixins.RetrieveModelMixin,
+                    mixins.UpdateModelMixin,
+                    mixins.CreateModelMixin,
+                    mixins.ListModelMixin,
+                    viewsets.GenericViewSet):
+    queryset = Bank.objects.all()
+    serializer_class =BankSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+
+
 
 
 
 
 """
+    def perform_create(self, serializer):
+        serializer.validated_data['account_number'] = self.request.account_number
+        user_bank_accounts = CustomerBankAccount.objects.filter(account_number=self.request.user)
+        for bank_account in user_bank_accounts:
+            bank_account.is_active = False
+            bank_account.save()
+        serializer.save(is_active=True)
+
+
     def perform_create(self, serializer):
         # Get the token from the request header
         token_key = self.request.headers.get('Authorization').split(' ')[1]
@@ -188,42 +199,6 @@ class CustomerBankAccountModellViewSets(mixins.RetrieveModelMixin,
         return queryset
 
     
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [CustomerAccessPermission]
-
-    def list(self, request):
-        logger.debug(str(self.queryset.query))
-        return super().list(request)
-
-    def get_queryset(self):
-        queryset =super().get_queryset()
-        if not self.request.user.is_superuser:
-            queryset = queryset.filter(id=self.request.user.id)
-
-        return queryset
-
-    def create(self,request, *args, **kwargs):
-        serilaizer = CustomerBankAccountSerializer(data=request.data)
-        if serilaizer.is_valid():
-            customer = serilaizer.save()
-            token = Token.objects.get(user=customer)
-            return Response({'customer': serilaizer.data, 'token': token.key}, status=status.HTTP_201_CREATED)
-        return Response(serilaizer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-"""
-
-
-class BankModellViewSets(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.CreateModelMixin,
-                    mixins.ListModelMixin,
-                    viewsets.GenericViewSet):
-    queryset = Bank.objects.all()
-    serializer_class =BankSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    """"
     authentication_classes = [TokenAuthentication]
     permission_classes = [CustomerAccessPermission]
 

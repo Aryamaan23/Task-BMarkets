@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import CustomUser,CustomerBankAccount,Bank
 from django.contrib.auth import authenticate,get_user_model
 from rest_framework.authtoken.models import Token
+#from django.utils.encoding import force_text
 
 
 CustomUser = get_user_model()
@@ -30,13 +31,31 @@ class BankSerializer(serializers.ModelSerializer):
 class CustomerBankAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model=CustomerBankAccount
-        fields='__all__'
+        #fields='__all__'
+        exclude=['is_active']
+
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['bank_logo']=instance.bank.bank_logo
+        data['bank_logo'] = self.context['request'].build_absolute_uri(data['bank_logo'].url)
+        return data
+    
+    
+    # def to_representation(self, instance):
+    #     #representation = super().to_representation(instance)
+    #     #representation['bank_logo'] = instance.bank.bank_logo
+    #     bank_logo = instance.bank.bank_logo.encode('iso-8859-1')
+    #     name_unicode = force_text(bank_logo, errors='replace')
+    #     return {'name':name_unicode}
+   
+
     
     
     def validate(self, attrs):
         user = self.context['request'].user
         instance = CustomerBankAccount(**attrs)
-        print(instance)
+        #print(instance)
 
         if user.is_superuser:
             # Count the number of accounts created by all users
@@ -49,7 +68,13 @@ class CustomerBankAccountSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("You cannot create more than 4 accounts in this bank.")
         return super().validate(attrs)
 
-    
+
+    def update(self, instance, validated_data):
+         #vs = self.context['request'].verification_status
+        if instance.verification_status==False:
+             raise serializers.ValidationError("You can't update the account as verification status is true")
+        return super().update(instance, validated_data)
+
    
     '''
     def validate_customer(self, customer):

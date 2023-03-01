@@ -14,8 +14,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate,get_user_model
 from rest_framework.decorators import action
-
-#import logging
+import logging
 
 #logger = logging.getLogger(__name__)
 
@@ -106,6 +105,15 @@ class BankModellViewSets(mixins.RetrieveModelMixin,
     serializer_class =BankSerializer
     #authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly & IsSuperUser]
+    
+    """
+    def list(self, request):
+        logger = logging.getLogger('django.db.backends')
+        with logger.debug('SQL Query'):
+            queryset = Bank.objects.all()
+            serializer = BankSerializer(queryset, many=True)
+            return Response(serializer.data)
+    """
 
 
 

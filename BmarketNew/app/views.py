@@ -142,7 +142,7 @@ class BankModellViewSets(mixins.RetrieveModelMixin,
     #authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly & IsSuperUser]
 
-
+   
     def list(self, request):
         """
         For logging the SQL queries

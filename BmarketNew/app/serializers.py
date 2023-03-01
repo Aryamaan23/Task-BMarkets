@@ -6,6 +6,9 @@ from rest_framework.authtoken.models import Token
 
 CustomUser = get_user_model()
 class CustomUserSerializer(serializers.ModelSerializer):
+    """
+    For handling the fields in the response of the customer
+    """
     class Meta:
         model = CustomUser
         #fields='__all__'
@@ -19,19 +22,29 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
 
 class BankSerializer(serializers.ModelSerializer):
+    """
+    For handling the fields in the response of the bank
+    """
     class Meta:
         model=Bank
         fields='__all__'
 
 
 class CustomerBankAccountSerializer(serializers.ModelSerializer):
+    """
+    For handling the fields in the response of the customer bank account
+    """
     class Meta:
         model=CustomerBankAccount
         #fields='__all__'
         exclude=['is_active','verification_status']
 
-
+   
+  
     def to_representation(self, instance):
+        """
+        For adding the bank logo in the get response
+        """
         data = super().to_representation(instance)
         data['bank_logo']=instance.bank.bank_logo
         data['bank_name']=instance.bank.bank_name
@@ -39,8 +52,11 @@ class CustomerBankAccountSerializer(serializers.ModelSerializer):
         return data
     
 
+
     def validate_customer(self, customer):
-        
+        """
+        Validation so that the customer can't add more than 4 bank accounts
+        """
         account_number=CustomerBankAccount.objects.filter(customer=customer).count()
         # Check if the user already has 4 accounts in the bank
         if account_number >= 4:
@@ -51,9 +67,15 @@ class CustomerBankAccountSerializer(serializers.ModelSerializer):
 
 
     def update(self, instance, validated_data):
+        """
+        If the status is active but the verification status is true then the user can't update the details of the account
+        """
         if instance.verification_status==True:
              raise serializers.ValidationError("You can't update the account as verification status is true")
         else:
+            """
+            Only these specific fields can be edited by the customer
+            """
             instance.account_number = validated_data.get('account_number', instance.account_number)
             instance.ifsc_code = validated_data.get('ifsc_code', instance.ifsc_code)
             instance.branch_name = validated_data.get('branch_name', instance.branch_name)

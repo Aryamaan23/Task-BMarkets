@@ -82,8 +82,10 @@ class CustomerBankAccountSerializer(serializers.ModelSerializer):
             instance.name_as_per_bank_record = validated_data.get('name_as_per_bank_record', instance.name_as_per_bank_record)
             instance.verification_mode = validated_data.get('verification_mode', instance.verification_mode)
             instance.account_type = validated_data.get('account_type', instance.account_type)
-            return instance
+            #return instance
         return super().update(instance, validated_data)
+        
+        #return super().update(instance, validated_data)
 
    
 

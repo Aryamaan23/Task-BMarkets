@@ -50,12 +50,6 @@ class CustomUserModalViewSets(mixins.RetrieveModelMixin,
     CustomerViewset for handling all the CRUD operations related to the customer
     """
 
-    def list(self, request) -> Response:
-        """
-        For logging the SQL queries
-        """
-        logger.debug(str(self.queryset.query))
-        return super().list(request)
 
     def get_queryset(self)-> CustomUser:
         """
@@ -94,12 +88,6 @@ class CustomerBankAccountModellViewSets(viewsets.ModelViewSet):
     """
 
 
-    def list(self, request) -> Response:
-        """
-        For logging the sql queries in the file
-        """
-        logger.debug(str(self.queryset.query))
-        return super().list(request)
    
     def get_queryset(self):
         """
@@ -138,85 +126,6 @@ class CustomerBankAccountModellViewSets(viewsets.ModelViewSet):
         serializer.save(customer=user,is_active = True)
 
 
-    
-
-
-    
-
-
-    
-    
-    
-
-    
-     
-
-    
-
-    """
-    def create(self, request, *args, **kwargs) -> Response:
-        
-        #Create Account only if you are authorized with the token authentication
-        
-        user = self.request.user
-        customer = CustomUser.objects.get(email=user.email)
-        request.data['customer'] = customer.id
-    
-        # Check if the account being created already exists
-        existing_account = CustomerBankAccount.objects.filter(
-        customer=customer,
-        account_number=request.data['account_number'],ifsc_code=request.data['ifsc_code']).first()
-    
-        # If the account exists, set it to active and all others to inactive
-        if existing_account:
-            existing_account.is_active = True
-            existing_account.save()
-            user_bank_accounts = CustomerBankAccount.objects.filter(
-            customer=customer
-        ).exclude(id=existing_account.id)
-            for bank_account in user_bank_accounts:
-                bank_account.is_active = False
-                bank_account.save()
-            return Response({'detail': 'Account already exists but status has been changed.'}, status=status.HTTP_201_CREATED)
-    
-        # If the account doesn't exist, create it as active and set all others to inactive
-        else:
-            new_account = super().create(request, *args, **kwargs)
-            user_bank_accounts = CustomerBankAccount.objects.filter(
-            customer=customer
-        ).exclude(id=new_account.data['id'])
-            for bank_account in user_bank_accounts:
-                bank_account.is_active = False
-                bank_account.save()
-            #return super().create(request, *args, **kwargs)
-            return Response({'detail': 'Account created successfully.'}, status=status.HTTP_201_CREATED)
-    
-        #return Response({'detail': 'Account created successfully.'}, status=status.HTTP_201_CREATED)
-        return super().create(request, *args, **kwargs)
-
-    """
-
-
-
-        
-        
-
-    """
-    def create(self, request, *args, **kwargs) -> Response:
-        
-        Create Account only if you are authorized with the token authentication
-        
-        user = self.request.user
-        customer=CustomUser.objects.get(email=user.email)
-        request.data['customer']=customer.id
-        user_bank_accounts = CustomerBankAccount.objects.filter(customer=customer.id)
-        for bank_account in user_bank_accounts:
-            bank_account.is_active = False
-            bank_account.save()
-        return super().create(request, *args, **kwargs)
-    """
-
-
 
 class BankModellViewSets(mixins.RetrieveModelMixin,
                     mixins.UpdateModelMixin,
@@ -235,15 +144,5 @@ class BankModellViewSets(mixins.RetrieveModelMixin,
     permission_classes = [IsAuthenticatedOrReadOnly & IsSuperUser]
 
    
-    def list(self, request) -> Response:
-        """
-        For logging the SQL queries
-        """
-        logger.debug(str(self.queryset.query))
-        return super().list(request)
-    
-
-
-
 
 

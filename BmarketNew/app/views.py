@@ -126,6 +126,37 @@ class CustomerBankAccountModellViewSets(viewsets.ModelViewSet):
         serializer.save(customer=user,is_active = True)
 
 
+    def update(self, request, *args, **kwargs):
+    # Get the user and the instance being updated
+        user = self.request.user
+        instance = self.get_object()
+
+        # Check if the instance belongs to the current user
+        if instance.customer.id != user.id:
+            return Response({'error': 'You are not authorized to update this account'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Remove the customer field from the request data in order to overcome the 
+        if instance.is_active is True:
+            request_data = request.data.copy()
+            request_data.pop('customer', None)
+            # Update the instance
+            serializer = self.get_serializer(instance, data=request_data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+
+        else:
+            return Response("You can't update the account")
+        return Response(serializer.data)
+
+    """
+    # Set the user's other accounts as inactive if necessary
+    if request.data.get('is_active') == False:
+        CustomerBankAccount.set_user_is_active(user, except_account_id=instance.id)
+    """
+
+        
+
+
 
 class BankModellViewSets(mixins.RetrieveModelMixin,
                     mixins.UpdateModelMixin,

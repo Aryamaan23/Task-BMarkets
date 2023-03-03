@@ -70,8 +70,9 @@ class CustomerBankAccountSerializer(serializers.ModelSerializer):
         """
         If the status is active but the verification status is true then the user can't update the details of the account
         """
-        if instance.verification_status==True:
-             raise serializers.ValidationError("You can't update the account as verification status is true")
+        if instance.is_active is True:
+            if instance.verification_status is True:
+                raise serializers.ValidationError("You can't update the account as verification status is true")
         else:
             """
             Only these specific fields can be edited by the customer
@@ -86,6 +87,7 @@ class CustomerBankAccountSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
         
         #return super().update(instance, validated_data)
+   
 
    
 

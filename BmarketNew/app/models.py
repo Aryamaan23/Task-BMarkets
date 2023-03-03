@@ -85,4 +85,24 @@ class CustomerBankAccount(models.Model):
         unique_together=('account_number','ifsc_code')
 
 
+    @classmethod
+    def set_user_is_active(cls,user):
+        cls.objects.filter(customer=user,is_active=True).update(is_active=False)
+       
+    @classmethod
+    def check_exsisting_account(cls,user,request):
+        exsisting_account_query = cls.objects.filter(customer = user,account_number = request.data['account_number'] ,ifsc_code = request.data['ifsc_code']).first()
+        if exsisting_account_query:
+            return exsisting_account_query
+        return False
+   
+    @classmethod
+    def fetch_exsisting_account_query(cls,user,query):
+        if query.is_active is True:
+            return False
+        cls.set_user_is_active(user)
+        query.is_active = True
+        query.save()
+
+
 

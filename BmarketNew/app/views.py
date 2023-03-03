@@ -101,7 +101,7 @@ class CustomerBankAccountModellViewSets(viewsets.ModelViewSet):
         logger.debug(str(self.queryset.query))
         return super().list(request)
    
-    def get_queryset(self) -> CustomerBankAccount:
+    def get_queryset(self):
         """
         Filter based on the active_status of the bank accounts and fetch it
         """
@@ -110,11 +110,56 @@ class CustomerBankAccountModellViewSets(viewsets.ModelViewSet):
         active_banks = CustomerBankAccount.objects.filter(customer=customer.id,is_active=True)
         return active_banks
 
+
     
+    
+    def create(self, request, *args, **kwargs) ->Response:
+        """
+        Override the create method to set the customer and set is_active=False for any existing bank accounts of the current user.
+        Returns:
+            Response: A response object containing the serialized customer bank account.
+        """
+        user = self.request.user
+        request.data['customer']=user.id
+        user_query = CustomerBankAccount.check_exsisting_account(user,request)
+        if user_query:
+            serializer = self.get_serializer(user_query)
+            if CustomerBankAccount.fetch_exsisting_account_query(user,user_query) is False:
+                return Response({'error':'Account is already in use'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response(serializer.data,status=status.HTTP_201_CREATED)
+        else:
+            serializer = self.get_serializer(data = request.data)
+            serializer.is_valid(raise_exception = True)
+            self.perform_create(serializer)
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+   
+    def perform_create(self, serializer):
+        user = self.request.user
+        CustomerBankAccount.set_user_is_active(user)
+        serializer.save(customer=user,is_active = True)
+
+
+    
+
+
+    
+
+
+    
+    
+    
+
+    
+     
+
+    
+
+    """
     def create(self, request, *args, **kwargs) -> Response:
-        """
-        Create Account only if you are authorized with the token authentication
-        """
+        
+        #Create Account only if you are authorized with the token authentication
+        
         user = self.request.user
         customer = CustomUser.objects.get(email=user.email)
         request.data['customer'] = customer.id
@@ -150,6 +195,8 @@ class CustomerBankAccountModellViewSets(viewsets.ModelViewSet):
     
         #return Response({'detail': 'Account created successfully.'}, status=status.HTTP_201_CREATED)
         return super().create(request, *args, **kwargs)
+
+    """
 
 
 

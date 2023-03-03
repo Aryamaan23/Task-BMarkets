@@ -105,4 +105,7 @@ class CustomerBankAccount(models.Model):
         query.save()
 
 
-
+    @classmethod
+    def get_active_in_response(cls,user):
+        active_banks = cls.objects.filter(customer=user,is_active=True)
+        return active_banks

@@ -3,6 +3,10 @@ from .models import CustomUser,CustomerBankAccount,Bank
 from django.contrib.auth import authenticate,get_user_model
 from rest_framework.authtoken.models import Token
 
+from django.conf import settings
+
+max_accounts = getattr(settings, 'MAX_ACCOUNT_NUMBER', 0)
+
 
 CustomUser = get_user_model()
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -59,7 +63,7 @@ class CustomerBankAccountSerializer(serializers.ModelSerializer):
         """
         account_number=CustomerBankAccount.objects.filter(customer=customer).count()
         # Check if the user already has 4 accounts in the bank
-        if account_number >= 4:
+        if account_number >= max_accounts:
             raise serializers.ValidationError("You cannot create more than 4 accounts in this bank.")
 
         return customer

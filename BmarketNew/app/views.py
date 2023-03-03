@@ -106,10 +106,8 @@ class CustomerBankAccountModellViewSets(viewsets.ModelViewSet):
         Filter based on the active_status of the bank accounts and fetch it
         """
         user = self.request.user
-        customer=CustomUser.objects.get(email=user.email)
-        active_banks = CustomerBankAccount.objects.filter(customer=customer.id,is_active=True)
+        active_banks=CustomerBankAccount.get_active_in_response(user)
         return active_banks
-
 
     
     

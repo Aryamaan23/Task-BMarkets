@@ -33,13 +33,16 @@ class Command(BaseCommand):
                      self.stdout.write(self.style.SUCCESS(f"Successfully created bank----> {bank.bank_name}."))
                 else:
                     self.stdout.write(self.style.WARNING(f"Bank {bank.bank_name} already exists in the database. Skipping..."))
+                    """
+                    For updating if the bank already exists
+                    """
                     bank.bank_name = row['bank_name']
                     bank.bank_website = row['bank_website']
                     bank.bank_number = row['bank_number']
                     bank.bank_logo = row['bank_logo']
                     bank.save()
 
-        #self.stdout.write(self.style.SUCCESS('Data imported successfully.'))
+                #self.stdout.write(self.style.SUCCESS('Data imported successfully.'))
 
         
                 

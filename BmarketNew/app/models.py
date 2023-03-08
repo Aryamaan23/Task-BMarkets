@@ -12,6 +12,10 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
 
+
+
+
+
 """
 CustomUser Model - Extended the django user model for storing the details of the customer
 """
@@ -30,6 +34,9 @@ class CustomUser(AbstractUser):
 
     def __str__(self) -> str:
         return self.email
+    
+    class Meta:
+        verbose_name_plural="Custom Users"
 
 
 '''
@@ -55,6 +62,9 @@ class Bank(models.Model):
 
     def __str__(self) -> str:
         return self.bank_name
+    
+    class Meta:
+        verbose_name_plural="Banks"
 
 
 """
@@ -83,6 +93,7 @@ class CustomerBankAccount(models.Model):
 
     class Meta:
         unique_together=('account_number','ifsc_code')
+        verbose_name_plural="Customer Bank Accounts"
 
 
     @classmethod
@@ -109,3 +120,14 @@ class CustomerBankAccount(models.Model):
     def get_active_in_response(cls,user):
         active_banks = cls.objects.filter(customer=user,is_active=True)
         return active_banks
+    
+
+class BaseModel(models.Model):
+    created=models.DateTimeField(auto_now_add=True)
+    modified=models.DateTimeField(auto_now=True)
+    is_active=models.BooleanField(default=True)
+    modified_by=models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='%(class)s_modified_by',blank=True,null=True)
+    created_by=models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='%(class)s_created_by',blank=True,null=True)
+
+    class Meta:
+        abstract=True

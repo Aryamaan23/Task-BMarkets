@@ -1,16 +1,21 @@
 from django.db import models
 
 # Create your models here.
+from django.db import models
+
+# Create your models here.
 
 # Create your models here.
 from django.db import models
+from app.models import BaseModel
 
-class Amc(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=True)
-    modified_by = models.CharField(max_length=250, null=True, blank=True)
-    created_by = models.CharField(max_length=250, null=True, blank=True)
+
+class Amc(BaseModel):
+    # created = models.DateTimeField(auto_now_add=True)
+    # modified = models.DateTimeField(auto_now=True)
+    # is_active = models.BooleanField(default=True)
+    # modified_by = models.CharField(max_length=250, null=True, blank=True)
+    # created_by = models.CharField(max_length=250, null=True, blank=True)
     name = models.CharField(max_length=200, unique=True)
     amfi_nav_download_dropdown_code = models.IntegerField(unique=True, null=True, blank=True)
     amc_assets_under_management = models.FloatField(null=True, blank=True)
@@ -42,4 +47,3 @@ class Amc(models.Model):
 
     class Meta:
         db_table = 'kbapp_amc'
-

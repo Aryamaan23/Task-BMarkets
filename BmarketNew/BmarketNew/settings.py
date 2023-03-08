@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'app',
     'rest_framework.authtoken',
     'drf_yasg',
+    'kbapp',
+    'kbapp.mutualfunds'
 ]
 
 MIDDLEWARE = [

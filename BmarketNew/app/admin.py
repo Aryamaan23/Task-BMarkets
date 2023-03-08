@@ -12,7 +12,7 @@ class CustomUserAdmin(UserAdmin):
     model = CustomUser
 
     list_display = ('id','username', 'email','password','first_name','middle_name','last_name','phone_number','pan_number' ,'is_active',
-                    'is_staff', 'is_superuser', 'last_login',)
+                    'is_staff', 'is_superuser', 'last_login','created','modified','modified_by','created_by')
     list_filter = ('is_active', 'is_staff', 'is_superuser')
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password')}),
@@ -33,12 +33,12 @@ class CustomUserAdmin(UserAdmin):
 
 from django.contrib import messages
 class BankAdmin(admin.ModelAdmin):
-    list_display = ('id','bank_id','bank_name','bank_website','bank_number','bank_logo')
+    list_display = ('id','bank_id','bank_name','bank_website','bank_number','bank_logo','created','modified','modified_by','created_by','is_active')
 
 
 class CustomerBankaccountAdmin(admin.ModelAdmin):
     #form=CustomerBankForm
-    list_display=('id','account_number','ifsc_code','is_active','customer','bank','cheque_image','branch_name','is_cheque_verified','name_as_per_bank_record','verification_mode','verification_status','account_type')
+    list_display=('id','account_number','ifsc_code','is_active','customer','bank','cheque_image','branch_name','is_cheque_verified','name_as_per_bank_record','verification_mode','verification_status','account_type','created','modified','modified_by','created_by','is_active')
     list_editable = ('verification_status',)
 
 

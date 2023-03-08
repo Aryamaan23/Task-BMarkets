@@ -13,6 +13,17 @@ from django.dispatch import receiver
 
 
 
+class BaseModel(models.Model):
+    created=models.DateTimeField(auto_now_add=True)
+    modified=models.DateTimeField(auto_now=True)
+    is_active=models.BooleanField(default=True)
+    #modified_by=models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='%(class)s_modified_by',blank=True,null=True)
+    #created_by=models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='%(class)s_created_by',blank=True,null=True)
+    modified_by=models.CharField(max_length=100,blank=True,null=True)
+    created_by=models.CharField(max_length=100,blank=True,null=True)
+
+    class Meta:
+        abstract=True
 
 
 
@@ -20,7 +31,7 @@ from django.dispatch import receiver
 CustomUser Model - Extended the django user model for storing the details of the customer
 """
 
-class CustomUser(AbstractUser):
+class CustomUser(AbstractUser,BaseModel):
     email = models.EmailField(_('email address'), unique=True)
     first_name = models.CharField(max_length=20)
     middle_name = models.CharField(max_length=20)
@@ -53,7 +64,9 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 Masterbank-Model for storing the details of all the banks
 """
 
-class Bank(models.Model):
+
+
+class Bank(BaseModel):
     bank_id=models.CharField(max_length=30)
     bank_name=models.CharField(max_length=30)
     bank_website=models.URLField()
@@ -71,7 +84,7 @@ class Bank(models.Model):
 Customer-BankAccount Model for storing the details of all the customers
 """
 
-class CustomerBankAccount(models.Model):
+class CustomerBankAccount(BaseModel):
     ACCOUNT_CHOICES = [
         ('savings', 'Savings'),
         ('current', 'Current')
@@ -122,12 +135,3 @@ class CustomerBankAccount(models.Model):
         return active_banks
     
 
-class BaseModel(models.Model):
-    created=models.DateTimeField(auto_now_add=True)
-    modified=models.DateTimeField(auto_now=True)
-    is_active=models.BooleanField(default=True)
-    modified_by=models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='%(class)s_modified_by',blank=True,null=True)
-    created_by=models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='%(class)s_created_by',blank=True,null=True)
-
-    class Meta:
-        abstract=True

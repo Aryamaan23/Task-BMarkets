@@ -1,0 +1,7 @@
+{ "model": "app.models.Bank", 
+   "fields": {      
+      "bank_id":10232323 ,  
+      "bank_name": "JSONBank",
+      "bank_website": "http://www.jsonbank.com",
+      "bank_number": "189",
+      "bank_logo": "bank4.png"  }}

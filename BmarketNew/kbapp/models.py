@@ -113,6 +113,23 @@ class AMCFund(BaseModel):
             return str(self.name) + "-" + str(self.amcfund_id)
     
 
+    @classmethod
+    def update_or_create_from_payload(cls, payload):
+        obj, created = cls.objects.get_or_create(
+            rta_fund_code=payload['rta_fund_code'],
+            defaults=payload
+        )
+
+        if not created:
+            obj.fund_type = payload['fund_type']
+            obj.fund_sub_type = payload['fund_sub_type']
+            obj.risk_factor = payload['risk_factor']
+            obj.fund_category = payload['fund_category']
+            obj.modified_by = payload['modified_by']
+            obj.modified = payload['modified']
+            obj.save()
+    
+
 
 class AMCFundScheme(BaseModel):
     Scheme_Type = (('OE', 'Open Ended'), ('CE', 'Closed Ended'), ('IN', 'Interval Schemes'))

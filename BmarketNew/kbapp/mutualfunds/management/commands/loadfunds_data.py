@@ -48,35 +48,86 @@ def logic_file(path):
                 # # If an object was created, print a message
                 # if created:
                 #     print(f"Created new AMCFund object with rta_fund_code: {obj.rta_fund_code}")
-         
+
+
+
 
 def logic_api(url):
-            data=get_response_from_api(url)
-            for i in range(0,len(data["data"]["funds"])):
-                fund_payload={
-                    "fund_type":data["data"]["funds"][i]['category'],
-                    "fund_sub_type":data["data"]["funds"][i]['subcategory'],
-                    "risk_factor":data["data"]["funds"][i]['risktype'],
-                    "rta_fund_code":data["data"]["funds"][i]['scheme'],
-                    "fund_category":data["data"]["funds"][i]['category'],
-                    "modified_by":"Aryamaan",
-                    "modified":datetime.now()
-                } 
-                 # Check if an object with the same rta_fund_code already exists
-                obj, created = AMCFund.objects.get_or_create(
-                rta_fund_code=fund_payload['rta_fund_code'],
-                defaults=fund_payload
-                )
+     data = get_response_from_api(url)
+     for fund in data["data"]["funds"]:
+            fund_payload={
+                "fund_type":fund['category'],
+                "fund_sub_type":fund['subcategory'],
+                "risk_factor":fund['risktype'],
+                "rta_fund_code":fund['scheme'],
+                "fund_category":fund['category'],
+                "modified_by":"Aryamaan",
+                "modified":datetime.now()
+            } 
+            AMCFund.update_or_create_from_payload(fund_payload)
 
-                 # If the object already exists, update it with the new values
-                if not created:
-                    obj.fund_type = fund_payload['fund_type']
-                    obj.fund_sub_type = fund_payload['fund_sub_type']
-                    obj.risk_factor = fund_payload['risk_factor']
-                    obj.fund_category = fund_payload['fund_category']
-                    obj.modified_by = fund_payload['modified_by']
-                    obj.modified = fund_payload['modified']
-                    obj.save()
+
+
+# def logic_api(url):
+#             data=get_response_from_api(url)
+#             for fund in data["data"]["funds"]:
+#                 fund_payload={
+#                     "fund_type":fund['category'],
+#                     "fund_sub_type":fund['subcategory'],
+#                     "risk_factor":fund['risktype'],
+#                     "rta_fund_code":fund['scheme'],
+#                     "fund_category":fund['category'],
+#                     "modified_by":"Aryamaan",
+#                     "modified":datetime.now()
+#                 } 
+#                  # Check if an object with the same rta_fund_code already exists
+#                 obj, created = AMCFund.objects.get_or_create(
+#                 rta_fund_code=fund_payload['rta_fund_code'],
+#                 defaults=fund_payload
+#                 )
+
+#                  # If the object already exists, update it with the new values
+#                 if not created:
+#                     obj.fund_type = fund_payload['fund_type']
+#                     obj.fund_sub_type = fund_payload['fund_sub_type']
+#                     obj.risk_factor = fund_payload['risk_factor']
+#                     obj.fund_category = fund_payload['fund_category']
+#                     obj.modified_by = fund_payload['modified_by']
+#                     obj.modified = fund_payload['modified']
+#                     obj.save()
+
+
+
+
+
+
+# def logic_api(url):
+#             data=get_response_from_api(url)
+#             for i in range(0,len(data["data"]["funds"])):
+#                 fund_payload={
+#                     "fund_type":data["data"]["funds"][i]['category'],
+#                     "fund_sub_type":data["data"]["funds"][i]['subcategory'],
+#                     "risk_factor":data["data"]["funds"][i]['risktype'],
+#                     "rta_fund_code":data["data"]["funds"][i]['scheme'],
+#                     "fund_category":data["data"]["funds"][i]['category'],
+#                     "modified_by":"Aryamaan",
+#                     "modified":datetime.now()
+#                 } 
+#                  # Check if an object with the same rta_fund_code already exists
+#                 obj, created = AMCFund.objects.get_or_create(
+#                 rta_fund_code=fund_payload['rta_fund_code'],
+#                 defaults=fund_payload
+#                 )
+
+#                  # If the object already exists, update it with the new values
+#                 if not created:
+#                     obj.fund_type = fund_payload['fund_type']
+#                     obj.fund_sub_type = fund_payload['fund_sub_type']
+#                     obj.risk_factor = fund_payload['risk_factor']
+#                     obj.fund_category = fund_payload['fund_category']
+#                     obj.modified_by = fund_payload['modified_by']
+#                     obj.modified = fund_payload['modified']
+#                     obj.save()
 
 
 def get_response_from_api(url):

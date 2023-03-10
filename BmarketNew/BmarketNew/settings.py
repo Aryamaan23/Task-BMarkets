@@ -30,6 +30,8 @@ ALLOWED_HOSTS = []
 
 MAX_ACCOUNT_NUMBER=4
 
+#FIXTURE_DIRS = ['/Users/aryamaanpandey/Task-BMarkets/BmarketNew/kbapp/fixtures']
+
 # Application definition
 
 INSTALLED_APPS = [

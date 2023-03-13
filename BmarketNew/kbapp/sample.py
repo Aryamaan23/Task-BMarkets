@@ -32,6 +32,15 @@ with open('/Users/aryamaanpandey/Task-BMarkets/BmarketNew/kbapp/amcfundscheme.js
             #     print('----------'*100)
 
 
+             for i in range(0,len(data["data"]["funds"])):
+                print(data["data"]["funds"][i]["schemes"][0]["plandesc"])
+
+
+
+             
+        
+
+
 
 
 

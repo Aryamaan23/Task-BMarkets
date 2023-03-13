@@ -91,6 +91,7 @@ class AMCFund(BaseModel):
     # sd_3yr = models.FloatField(default=0.0, null=True, blank=True)
  
     def __str__(self):
+        
         """This defines how the :model:`kbapp.AMCFund` object will be represented."""
         return str(self.name) + "-" + str(self.amcfund_id)
  
@@ -128,6 +129,10 @@ class AMCFund(BaseModel):
             obj.modified_by = payload['modified_by']
             obj.modified = payload['modified']
             obj.save()
+
+    # @classmethod
+    # def get_amc_fund(cls,amcfund_code):
+    #     amcfund = cls.objects.get(rta_fund_code = amcfund_code)
     
 
 
@@ -408,3 +413,31 @@ class AMCFundScheme(BaseModel):
         :return: Name of the scheme.
         """
         return str(self.name)
+    
+
+    @classmethod
+    def update_or_create_from_schemes_payload(cls, payload):
+        obj, created = cls.objects.update_or_create(
+            name=payload['name'],
+            defaults=payload
+        )
+
+    
+    """
+    @classmethod
+    def update_or_create_from_payload(cls, payload):
+        obj, created = cls.objects.get_or_create(
+            rta_fund_code=payload['rta_fund_code'],
+            defaults=payload
+        )
+
+        if not created:
+            obj.fund_type = payload['fund_type']
+            obj.fund_sub_type = payload['fund_sub_type']
+            obj.risk_factor = payload['risk_factor']
+            obj.fund_category = payload['fund_category']
+            obj.modified_by = payload['modified_by']
+            obj.modified = payload['modified']
+            obj.save()
+
+    """

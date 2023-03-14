@@ -7,7 +7,6 @@ import datetime
 path='/Users/aryamaanpandey/Task-BMarkets/BmarketNew/kbapp/amcfundscheme.json'
 
 
-
 """
 The function first checks whether the input param is an integer or not using the isinstance function. If param is not an integer, the function returns an empty string.If param is an integer, the function converts it to a string and checks if the length of the string is 4. If the length is 4, the function extracts the first two characters as the hour and the last two characters as the minute of the cutoff time. It then creates a datetime.time object with these values and returns it.
 If the length of the string is not 4, the function returns an empty string
@@ -41,15 +40,6 @@ If "param1" is found in "param2", the function returns True. Otherwise, it retur
 """
 def get_status_flag(param1, param2):
     return True if param1 in param2.lower() else False
-
-
-
-class Command(BaseCommand):
-     help = 'Stores fund data in the amcfund model'
-
-     def handle(self,*args,**options):
-         logic_file_class(path)
-         self.stdout.write("Successfully created bank records")
 
 
 
@@ -138,7 +128,12 @@ def logic_file_class(path):
 
 
 
+class Command(BaseCommand):
+     help = 'Stores fund data in the amcfund model'
 
+     def handle(self,*args,**options):
+         logic_file_class(path)
+         self.stdout.write("Successfully created bank records")
 
 
 

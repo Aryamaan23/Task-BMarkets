@@ -59,6 +59,10 @@ def get_response_from_api(url : str):
         return response.status_code
 
 def logic_api_funds(url : str):
+     """
+     In this logic, we are fetching the response from KFIN api. Then traversing through the funds list so 
+     that we can save the data of each fund as per the payload mapping.
+     """
      data = get_response_from_api(url)
      for fund in data["data"]["funds"]:
             fund_payload={

@@ -58,14 +58,12 @@ def get_response_from_api(url : str):
     else:
         return response.status_code
 
-def logic_api_funds(url : str):
-     """
+def logic_api_funds(fund):
+    """
      In this logic, we are fetching the response from KFIN api. Then traversing through the funds list so 
      that we can save the data of each fund as per the payload mapping.
      """
-     data = get_response_from_api(url)
-     for fund in data["data"]["funds"]:
-            fund_payload={
+    fund_payload={
                 "fund_type":fund['category'],
                 "fund_sub_type":fund['subcategory'],
                 "risk_factor":fund['risktype'],
@@ -74,27 +72,13 @@ def logic_api_funds(url : str):
                 "modified_by":"Aryamaan",
                 "modified":datetime.datetime.now()
             } 
-            AMCFund.update_or_create_from_payload(fund_payload)
+    amc_fund=AMCFund.update_or_create_from_payload(fund_payload)
+    flag_updated=True
+    return amc_fund,flag_updated
+     
 
-
-
-def logic_api_schemes(url : str):
-        """
-        In this logic, we are fetching the response from KFIN api. Then traversing through the schemes list which is inside
-        the funds list in response. In that schemes we are trying to match the rta_fund_code with the scheme because it is a
-        unique identifier in funds table so that we can save the schemes corresponding to the fund because they have a one to many relationship as per the payload mapping.
-        """
-        created_count = 0
-        updated_count = 0
-        data = get_response_from_api(url)
-        funds_list = data["data"]["funds"]
-        # for i in range(0,len(data["data"]["funds"])):
-        for fund in funds_list:
-                amcfund_code = fund["scheme"]
-                amcfund = AMCFund.objects.get(rta_fund_code = amcfund_code)
-                #amcfund=AMCFund.get_amc_fund(amcfund_code)
-                schemes_list = fund["schemes"]
-                for scheme in schemes_list:
+def logic_api_schemes(schemes_list,amcfund,fund):
+     for scheme in schemes_list:
                     is_direct_fund = get_status_flag('direct', scheme['plandesc'])
                     is_regular_fund = get_status_flag('regular', scheme['plandesc'])
                     is_growth_fund = get_status_flag('growth', scheme['optiondesc'])
@@ -133,7 +117,7 @@ def logic_api_schemes(url : str):
                         "rta_amc_scheme_code": scheme['schemeid'],
                         "rta_isin": scheme['isin'],
                         "rta_amc_code": scheme['fundname'],
-                        "rta_scheme_type": amcfund.fund_category,
+                        "rta_scheme_type": fund["category"],
                         "rta_scheme_plan": scheme['plandesc'],
                         "rta_scheme_name": scheme['desc'],
                         "rta_scheme_active_flag": scheme['active'],
@@ -165,13 +149,35 @@ def logic_api_schemes(url : str):
 
 
 
+def logic_api_fund_schemes(url : str):
+        """
+        In this logic, we are fetching the response from KFIN api. Then traversing through the schemes list which is inside
+        the funds list in response. In that schemes we are trying to match the rta_fund_code with the scheme because it is a
+        unique identifier in funds table so that we can save the schemes corresponding to the fund because they have a one to many relationship as per the payload mapping.
+        """
+        data = get_response_from_api(url)
+        funds_list = data["data"]["funds"]
+        for fund in funds_list:
+                amcfund_code = fund["scheme"]
+                amcfund,fund_status = logic_api_funds(fund)
+                #amcfund = AMCFund.objects.get(rta_fund_code = amcfund_code)
+                #amcfund=AMCFund.get_amc_fund(amcfund_code)
+                if not fund_status:
+                    continue
+                schemes_list = fund["schemes"]
+                logic_api_schemes(schemes_list,amcfund,fund)
+                
+
+
+
 
 class Command(BaseCommand):
      help = 'Stores fund and schemes data in the amcfund model'
 
      def handle(self,*args,**options):
-         logic_api_funds(url)
-         logic_api_schemes(url)
+         #logic_api_funds(url)
+         #logic_api_schemes(url)
+         logic_api_fund_schemes(url)
          self.stdout.write("Successfully created bank records")
 
 

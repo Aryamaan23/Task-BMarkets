@@ -129,6 +129,7 @@ class AMCFund(BaseModel):
             obj.modified_by = payload['modified_by']
             obj.modified = payload['modified']
             obj.save()
+        return obj
 
     # @classmethod
     # def get_amc_fund(cls,amcfund_code):

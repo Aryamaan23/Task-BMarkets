@@ -75,6 +75,11 @@ def logic_api_funds(url : str):
 
 
 def logic_api_schemes(url : str):
+        """
+        In this logic, we are fetching the response from KFIN api. Then traversing through the schemes list which is inside
+        the funds list in response. In that schemes we are trying to match the rta_fund_code with the scheme because it is a
+        unique identifier in funds table so that we can save the schemes corresponding to the fund because they have a one to many relationship as per the payload mapping.
+        """
         created_count = 0
         updated_count = 0
         data = get_response_from_api(url)

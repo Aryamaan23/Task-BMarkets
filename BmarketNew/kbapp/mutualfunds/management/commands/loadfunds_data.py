@@ -13,7 +13,7 @@ url = "https://clientwebsitesuat3.kfintech.com/bajaj/api/v1/masterData/getScheme
 
 
 
-def logic_api_funds(fund):
+def insert_funds(fund):
     """
      In this logic, we are fetching the response from KFIN api. Then traversing through the funds list so 
      that we can save the data of each fund as per the payload mapping.
@@ -24,7 +24,7 @@ def logic_api_funds(fund):
     return amc_fund,flag_updated
      
 
-def logic_api_schemes(schemes_list,amcfund,fund):
+def insert_schemes(schemes_list,amcfund,fund):
      for scheme in schemes_list:
                 scheme_payload=scheme_mappings(scheme,amcfund,fund)
                 AMCFundScheme.update_or_create_from_schemes_payload(scheme_payload)
@@ -41,13 +41,13 @@ def logic_api_fund_schemes(url : str):
         funds_list = data["data"]["funds"]
         for fund in funds_list:
                 amcfund_code = fund["scheme"]
-                amcfund,fund_status = logic_api_funds(fund)
+                amcfund,fund_status = insert_funds(fund)
                 #amcfund = AMCFund.objects.get(rta_fund_code = amcfund_code)
                 #amcfund=AMCFund.get_amc_fund(amcfund_code)
                 if not fund_status:
                     continue
                 schemes_list = fund["schemes"]
-                logic_api_schemes(schemes_list,amcfund,fund)
+                insert_schemes(schemes_list,amcfund,fund)
 
 
 

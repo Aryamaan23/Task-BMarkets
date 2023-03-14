@@ -81,11 +81,6 @@ def logic_file(path):
                 #     print(f"Created new AMCFund object with rta_fund_code: {obj.rta_fund_code}")
 
 
-
-
-
-
-
 def logic_api(url):
      data = get_response_from_api(url)
      for fund in data["data"]["funds"]:

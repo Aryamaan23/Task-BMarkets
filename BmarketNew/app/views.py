@@ -15,6 +15,8 @@ from rest_framework.views import APIView
 from django.contrib.auth import authenticate,get_user_model
 from rest_framework.decorators import action
 import logging
+import json
+import http
 
 logger = logging.getLogger(__name__)
 
@@ -87,15 +89,48 @@ class CustomerBankAccountModellViewSets(viewsets.ModelViewSet):
     Only authorized user with the token can update his/her information
     """
 
-
-   
     def get_queryset(self):
-        """
-        Filter based on the active_status of the bank accounts and fetch it
-        """
-        user = self.request.user
-        active_banks=CustomerBankAccount.get_active_in_response(user)
-        return active_banks
+         """
+         Filter based on the active_status of the bank accounts and fetch it
+         """
+         user = self.request.user
+         active_banks=CustomerBankAccount.get_active_in_response(user)
+         return active_banks
+   
+    
+    # def get_queryset(self):
+        
+    #     user = self.request.user
+    #     #active_banks=CustomerBankAccount.get_active_in_response(user)
+    #     #return active_banks
+    #     cookies = self.request.COOKIES
+    #     print(type(cookies))
+    #     print(cookies['account_data'])
+        #print(type(cookies['account_data']))
+        #print(cookies['account_data'])
+        # set_cookie_header=cookies['account_data']
+        # cookie = http.cookies.SimpleCookie(set_cookie_header)
+        #print(cookie.value)
+        #account_data = cookie['account_data'].value
+        #account_data_dict = json.loads(account_data.replace("'", "\""))
+        #return account_data_dict
+
+
+        #print(cookies['account_data'])
+        #return json.loads(cookies['account_data'])
+        #data_dict=json.loads(cookies['account_data'])
+        #return data_dict
+        #string=cookies['account_data']
+        #x=json.loads(string)
+        #return x
+        # Access the cookie value by key, e.g. cookies['account_data']
+        # Return the queryset
+        #queryset = super().get_queryset()
+        #return queryset
+
+    
+    
+    
 
     
     
@@ -118,12 +153,39 @@ class CustomerBankAccountModellViewSets(viewsets.ModelViewSet):
             serializer = self.get_serializer(data = request.data)
             serializer.is_valid(raise_exception = True)
             self.perform_create(serializer)
-            return Response(serializer.data,status=status.HTTP_201_CREATED)
+            data_new=serializer.data
+            bank_name,first_name,last_name,email = self.append_bank_data_in_cookie(data_new)
+            response=Response(serializer.data)
+            response.set_cookie('name_as_per_bank_record',serializer.validated_data.get('name_as_per_bank_record'))
+            response.set_cookie('branch_name',serializer.validated_data.get('branch_name'))
+            response.set_cookie('bank_name',bank_name)
+            response.set_cookie('first_name',first_name)
+            response.set_cookie('last_name',last_name)
+            response.set_cookie('email',email)
+            return response
+            
+
+    def append_bank_data_in_cookie(self,data):
+        bank_id=data['bank']
+        bank=Bank.objects.get(bank_id=bank_id)
+        bank_name=bank.bank_name
+        first_name=self.request.user.first_name
+        last_name=self.request.user.last_name
+        email=self.request.user.email
+
+        return bank_name,first_name,last_name,email
    
     def perform_create(self, serializer):
         user = self.request.user
         CustomerBankAccount.set_user_is_active(user)
         serializer.save(customer=user,is_active = True)
+        #account=serializer.save(customer=user,is_active = True)
+        #account_data=CustomerBankAccountSerializer(account).data
+
+        #response=Response({'status':'Account created successfully'})
+        #response.set_cookie('account_data',account_data)
+        #print(type(response.cookies['account_data']))
+        #print(response.set_cookie)
 
 
     def update(self, request, *args, **kwargs):
@@ -147,6 +209,31 @@ class CustomerBankAccountModellViewSets(viewsets.ModelViewSet):
         else:
             return Response("You can't update the account")
         return Response(serializer.data)
+    
+    def retrieve(self, request, *args, **kwargs):
+        data={}
+        data["bank_name"]=request.COOKIES.get('bank_name')
+        data['first_name']=request.COOKIES.get('first_name')
+        data['last_name']=request.COOKIES.get('last_name')
+        data['email']=request.COOKIES.get('email')
+        data["branch_name"] = request.COOKIES.get('branch_name')
+        data["name_as_per_bank_record"] = request.COOKIES.get('name_as_per_bank_record')
+        if data:
+            return Response(data,status=status.HTTP_200_OK)
+    
+
+    # def retrieve(self, request, *args, **kwargs):
+    #      user = self.request.user
+    #      cookies = self.request.COOKIES
+    #      cookie_data = cookies['account_data']
+    #      print(cookie_data)
+    #      if cookie_data:
+    #          data = json.loads(cookie_data)
+    #          serializer = self.get_serializer(data=data)
+    #          serializer.is_valid(raise_exception=True)
+    #          return Response(data)
+    #      else:
+    #          return Response({'error': 'Account data not found in cookie'}, status=status.HTTP_400_BAD_REQUEST)
 
     """
     # Set the user's other accounts as inactive if necessary

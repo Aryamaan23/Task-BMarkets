@@ -53,6 +53,8 @@ class CustomerBankAccountSerializer(serializers.ModelSerializer):
         data['bank_logo']=instance.bank.bank_logo
         data['bank_name']=instance.bank.bank_name
         data['bank_logo'] = self.context['request'].build_absolute_uri(data['bank_logo'].url)
+        #print(self.context)
+        #data['bank_logo'] = build_absolute_uri(self.request.COOKIES.get('bank_logo_url'))
         return data
     
 

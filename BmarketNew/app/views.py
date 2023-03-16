@@ -154,29 +154,30 @@ class CustomerBankAccountModellViewSets(viewsets.ModelViewSet):
             serializer.is_valid(raise_exception = True)
             self.perform_create(serializer)
             data_new=serializer.data
-            #bank_name,first_name,last_name,email = self.append_bank_data_in_cookie(data_new)
+            bank_name,first_name,last_name,email = self.append_bank_data_in_cookie(data_new)
+            # response=Response(serializer.data)
+            # data_new2=self.append_bank_data_in_cookie(data_new)
+            # response.set_cookie('account_data',json.dumps(data_new2))
             response=Response(serializer.data)
-            data_new2=self.append_bank_data_in_cookie(data_new)
-            response.set_cookie('account_data',json.dumps(data_new2))
-            # response.set_cookie('name_as_per_bank_record',serializer.validated_data.get('name_as_per_bank_record'))
-            # response.set_cookie('branch_name',serializer.validated_data.get('branch_name'))
-            # response.set_cookie('bank_name',bank_name)
-            # response.set_cookie('first_name',first_name)
-            # response.set_cookie('last_name',last_name)
-            # response.set_cookie('email',email)
+            response.set_cookie('name_as_per_bank_record',serializer.validated_data.get('name_as_per_bank_record'))
+            response.set_cookie('branch_name',serializer.validated_data.get('branch_name'))
+            response.set_cookie('bank_name',bank_name)
+            response.set_cookie('first_name',first_name)
+            response.set_cookie('last_name',last_name)
+            response.set_cookie('email',email)
             return response
             
 
     def append_bank_data_in_cookie(self,data):
         bank_id=data['bank']
         bank=Bank.objects.get(bank_id=bank_id)
-        data["bank_name"]=bank.bank_name
-        data["first_name"]=self.request.user.first_name
-        data["last_name"]=last_name=self.request.user.last_name
-        data["email"]=self.request.user.email
+        bank_name=bank.bank_name
+        first_name=self.request.user.first_name
+        last_name=last_name=self.request.user.last_name
+        email=self.request.user.email
 
-        #return bank_name,first_name,last_name,email
-        return data
+        return bank_name,first_name,last_name,email
+        #return data
    
     def perform_create(self, serializer):
         user = self.request.user
@@ -214,17 +215,17 @@ class CustomerBankAccountModellViewSets(viewsets.ModelViewSet):
         return Response(serializer.data)
     
     def retrieve(self, request, *args, **kwargs):
-        # data={}
-        # data["bank_name"]=request.COOKIES.get('bank_name')
-        # data['first_name']=request.COOKIES.get('first_name')
-        # data['last_name']=request.COOKIES.get('last_name')
-        # data['email']=request.COOKIES.get('email')
-        # data["branch_name"] = request.COOKIES.get('branch_name')
-        # data["name_as_per_bank_record"] = request.COOKIES.get('name_as_per_bank_record')
-        # if data:
-        #     return Response(data,status=status.HTTP_200_OK)
-        data=json.loads(request.COOKIES.get('account_data'))
-        return Response(data)
+        data={}
+        data["bank_name"]=request.COOKIES.get('bank_name')
+        data['first_name']=request.COOKIES.get('first_name')
+        data['last_name']=request.COOKIES.get('last_name')
+        data['email']=request.COOKIES.get('email')
+        data["branch_name"] = request.COOKIES.get('branch_name')
+        data["name_as_per_bank_record"] = request.COOKIES.get('name_as_per_bank_record')
+        if data:
+            return Response(data,status=status.HTTP_200_OK)
+        # data=json.loads(request.COOKIES.get('account_data'))
+        # return Response(data)
     
 
     # def retrieve(self, request, *args, **kwargs):

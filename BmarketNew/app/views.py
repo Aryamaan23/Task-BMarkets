@@ -154,9 +154,10 @@ class CustomerBankAccountModellViewSets(viewsets.ModelViewSet):
             serializer.is_valid(raise_exception = True)
             self.perform_create(serializer)
             data_new=serializer.data
-            bank_name,first_name,last_name,email = self.append_bank_data_in_cookie(data_new)
+            #bank_name,first_name,last_name,email = self.append_bank_data_in_cookie(data_new)
             response=Response(serializer.data)
-            response.set_cookie('account_data',json.dumps(data_new))
+            data_new2=self.append_bank_data_in_cookie(data_new)
+            response.set_cookie('account_data',json.dumps(data_new2))
             # response.set_cookie('name_as_per_bank_record',serializer.validated_data.get('name_as_per_bank_record'))
             # response.set_cookie('branch_name',serializer.validated_data.get('branch_name'))
             # response.set_cookie('bank_name',bank_name)
@@ -169,12 +170,13 @@ class CustomerBankAccountModellViewSets(viewsets.ModelViewSet):
     def append_bank_data_in_cookie(self,data):
         bank_id=data['bank']
         bank=Bank.objects.get(bank_id=bank_id)
-        bank_name=bank.bank_name
-        first_name=self.request.user.first_name
-        last_name=self.request.user.last_name
-        email=self.request.user.email
+        data["bank_name"]=bank.bank_name
+        data["first_name"]=self.request.user.first_name
+        data["last_name"]=last_name=self.request.user.last_name
+        data["email"]=self.request.user.email
 
-        return bank_name,first_name,last_name,email
+        #return bank_name,first_name,last_name,email
+        return data
    
     def perform_create(self, serializer):
         user = self.request.user
